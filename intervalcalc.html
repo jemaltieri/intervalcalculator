@@ -11,6 +11,7 @@
 <meta http-equiv="Content-Style-Type" content="text/css">
 
 
+
 <script language="JavaScript">
 function multbyratio() {
 	var startFreq = parseFloat(document.getElementById('inputFreq').value);
@@ -146,6 +147,9 @@ function changedNote() {
 
 </script>
 
+<script src="js/src/audiolet/Audiolet.js"></script>
+<script src="js/audiolet_app.js"></script>
+
 <STYLE type="text/css">
    div#left {
    	position: absolute;
@@ -229,7 +233,9 @@ Staff notation goes here
 	<option value="9">9</option>
 </select>
 <input type="text" size="2" maxlength="2" id="inputCents" onchange="changedNote()" /> cents<br />
-<input type="text" size="3" maxlength="6" id="inputFreq" onchange="changedFreq()" value="440" /> Hz
+<input type="text" size="3" maxlength="6" id="inputFreq" onchange="changedFreq()" value="440" /> Hz<br />
+<input type="checkbox" id="synth1" onchange="toggleSynth()" />
+
 </div>
 <div id="mid">
 <h2>Transformation</h2>
