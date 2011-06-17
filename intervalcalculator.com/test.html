@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<title>Conforming XHTML 1.0 Transitional Template</title>
+
+<script language="JavaScript">
+function multbyratio(theForm) {
+	var startNote = theForm.startfreq.value;
+	var numerator = theForm.num.value;
+	var denominator = theForm.den.value;
+	var result = parseFloat(startNote) * parseFloat(numerator) / parseFloat(denominator);
+	theForm.elements["resultBox"].value = result;
+}
+
+function multbyet(theForm) {
+	alert("multbyet was called!");
+	var startNote = theForm.startfreq.value;
+	var numerator = theForm.num.value;
+	var denominator = theForm.den.value;
+	var result = parseFloat(startNote) * Math.pow(2,(parseFloat(num)/parseFloat(den)));
+	alert("got answer"
+	theForm.elements["resultBox"].value = result;
+}
+
+function switchTransform(selectObj) {
+	var chosenoption=selectObj.options[selectObj.selectedIndex].value;
+	button_element=document.getElementById('subbutton');
+	//alert(button_element);
+	//alert(chosenoption);
+	if (chosenoption == "JI") {
+		document.getElementById('transformform').innerHTML = "Ratio: <input type=\"text\" size=\"3\" maxlength=\"3\" name=\"num\" /> / <input type=\"text\" size=\"3\" maxlength=\"3\" name=\"den\" /><br />";
+		button_element.setAttribute('onclick','multbyratio(this.form);'); // for FF
+    	button_element.onclick = function() {multbyratio(this.form);}; // for IE
+	} else if (chosenoption == "ET") {
+		document.getElementById('transformform').innerHTML = "<input type=\"text\" size=\"3\" maxlength=\"3\" name=\"num\" /> steps out of <input type=\"text\" size=\"3\" maxlength=\"3\" name=\"den\" /> steps per octave <br />";
+		button_element.setAttribute('onclick','multbyet(this.form);'); // for FF
+    	button_element.onclick = function() {multbyet(this.form);}; // for IE
+	}
+}
+
+</script>
+
+</head>
+
+<body>
+<form id="foo" action="#">
+Starting Frequency: <input type="text" size="10" maxlength="10" name="startfreq" /><br />
+Type of transformation:
+<select id="trans" onChange="switchTransform(this)">
+	<option value="JI" selected="selected">JI</option>
+	<option value="ET">ET</option>
+</select>
+<div id="transformform">
+Ratio: <input type="text" size="3" maxlength="3" name="num" /> / 
+<input type="text" size="3" maxlength="3" name="den" /><br />
+</div>
+<input type="button" name="submit" id="subbutton" value="Calculate" onclick="multbyratio(this.form);" /><br />
+<input type="text" size="3" maxlength="3" name="resultBox" />
+</form>
+
+
+
+
+</body>
+
+</html>
