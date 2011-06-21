@@ -3,6 +3,7 @@ function multbyratio() {
 	var num = parseFloat(document.getElementById('numerator').value);
 	var den = parseFloat(document.getElementById('denominator').value);
 	var result = startFreq*num/den;
+	synths[1].sine.frequency.setValue(result);
 	result = Math.round(result*100)/100;
 	noteNameResult(result);
 	document.getElementById('resultHz').innerHTML = result + " Hz";
@@ -13,6 +14,7 @@ function multbyet(startFreq) {
 	var steps = parseFloat(document.getElementById('steps').value);
 	var stepsper = parseFloat(document.getElementById('stepsperoctave').value);
 	var result = startFreq * Math.pow(2,steps/stepsper);
+	synths[1].sine.frequency.setValue(result);
 	result = Math.round(result*100)/100;
 	noteNameResult(result);
 	document.getElementById('resultHz').innerHTML = result + "Hz";
@@ -103,7 +105,9 @@ function printCents(n) {
 }
 
 function changedFreq() {
-	var midiNum = freq2midi(parseFloat(document.getElementById("inputFreq").value));
+	var newFreq = parseFloat(document.getElementById("inputFreq").value)
+	synths[0].sine.frequency.setValue(newFreq);
+	var midiNum = freq2midi(newFreq);
 	var roundedMidiNum = Math.round(midiNum);
 	var cents = Math.round(((midiNum-roundedMidiNum)*10000)/100);	
 	document.getElementById("inputCents").value = printCents(cents);
@@ -126,6 +130,16 @@ function changedNote() {
 		centsStr = "0";
 	}
 	var cents = parseFloat(centsStr);
-	document.getElementById("inputFreq").value = midi2freq(note2midi(noteName,accidental,octave)+(cents/100));
+	var newFreq = midi2freq(note2midi(noteName,accidental,octave)+(cents/100));
+	synths[0].sine.frequency.setValue(newFreq);
+	document.getElementById("inputFreq").value = newFreq;
 	updateResult();
+}
+
+function toggleSynth(val, n) {
+	if (val == true) {
+		synths[n].gain.gain.setValue(0.7);
+	} else {
+		synths[n].gain.gain.setValue(0);
+	}
 }
