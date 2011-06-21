@@ -121,9 +121,12 @@ Ratio: <input type="text" size="2" maxlength="4" id="numerator" value="1" onchan
 Staff notation goes here
 </div>
 <div id="result12tet">
+<br />
 </div>
 <div id="resultHz">
+<br />
 </div>
+Audio (FF only)<input type="checkbox" id="synth2" onchange="toggleSynth(this.checked, 1)" />
 </div>
 </div>
 
