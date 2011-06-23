@@ -1,3 +1,6 @@
 [submodule "Audiolet"]
 	path = Audiolet
 	url = git://github.com/oampo/Audiolet.git
+[submodule "vexflow"]
+	path = vexflow
+	url = git@github.com:jimaltieri/vexflow.git
