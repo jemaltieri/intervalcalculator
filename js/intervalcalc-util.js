@@ -1,31 +1,23 @@
-function multbyratio() {
-	var startFreq = parseFloat(document.getElementById('inputFreq').value);
+function multbyratio(startFreq) {
 	var num = parseFloat(document.getElementById('numerator').value);
 	var den = parseFloat(document.getElementById('denominator').value);
 	var result = startFreq*num/den;
-	synths[1].sine.frequency.setValue(result);
-	result = Math.round(result*100)/100;
-	noteNameResult(result);
-	document.getElementById('resultHz').innerHTML = result + " Hz";
+	return result;
 }
 
 function multbyet(startFreq) {
-	var startFreq = parseFloat(document.getElementById('inputFreq').value);
 	var steps = parseFloat(document.getElementById('steps').value);
 	var stepsper = parseFloat(document.getElementById('stepsperoctave').value);
 	var result = startFreq * Math.pow(2,steps/stepsper);
-	synths[1].sine.frequency.setValue(result);
-	result = Math.round(result*100)/100;
-	noteNameResult(result);
-	document.getElementById('resultHz').innerHTML = result + "Hz";
+	return result;
 }
 
 function switchTransform(selectObj) {
 	var chosenoption=selectObj.options[selectObj.selectedIndex].value;
 	if (chosenoption == "JI") {
-		document.getElementById('transformspan').innerHTML = "Ratio: <input type=\"text\" size=\"3\" maxlength=\"3\" id=\"numerator\" value=\"1\" onchange=\"multbyratio()\"  /> / <input type=\"text\" size=\"3\" maxlength=\"3\" id=\"denominator\" value=\"1\" onchange=\"multbyratio()\"  /><br />";
+		document.getElementById('transformspan').innerHTML = "Ratio: <input type=\"text\" size=\"3\" maxlength=\"3\" id=\"numerator\" value=\"1\" onchange=\"updateResult()\"  /> / <input type=\"text\" size=\"3\" maxlength=\"3\" id=\"denominator\" value=\"1\" onchange=\"updateResult()\"  /><br />";
 	} else if (chosenoption == "ET") {	
-		document.getElementById('transformspan').innerHTML = "<input type=\"text\" size=\"3\" maxlength=\"3\" id=\"steps\" value=\"0\" onchange=\"multbyet()\"  /> steps out of <input type=\"text\" size=\"3\" maxlength=\"3\" id=\"stepsperoctave\" value=\"12\" onchange=\"multbyet()\"  /> steps per octave <br />";
+		document.getElementById('transformspan').innerHTML = "<input type=\"text\" size=\"3\" maxlength=\"3\" id=\"steps\" value=\"0\" onchange=\"updateResult()\"  /> steps out of <input type=\"text\" size=\"3\" maxlength=\"3\" id=\"stepsperoctave\" value=\"12\" onchange=\"updateResult()\"  /> steps per octave <br />";
 	}
 	updateResult();
 }
@@ -87,16 +79,43 @@ function noteNameResult(freq) {
 	midiNum = roundedMidiNum % 12;
 	var noteNames=["C","C","D","D","E","F","F","G","G","A","A","B"];
 	var accidentals=["♮","♯","♮","♯","♮","♮","♯","♮","♯","♮","♯","♮"];
+	var accidentals2=["natural","sharp","natural","sharp","natural","natural","sharp","natural","sharp","natural","sharp","natural"];
 	document.getElementById("result12tet").innerHTML = noteNames[midiNum] + accidentals[midiNum] + octave + " " + printCents(cents) + "¢";
+	var result = new Object();
+	result.noteName = noteNames[midiNum];
+	result.accidental = accidentals2[midiNum];
+	result.octave = octave;
+	return result;
+}
+
+function getClef(octave) {
+	var clef;
+	if (octave >= 4) {
+		clef = "treble";
+	} else {
+		clef = "bass";
+	}
+	return clef;
 }
 
 function updateResult() {
 	var calcType = selectValueGet('calcType');
+	var startfreq = parseFloat(document.getElementById('inputFreq').value);
+	var result;
 	switch(calcType) {
-		case 'JI': multbyratio(); break;
-		case 'ET': multbyet(); break;
+		case 'JI': result = multbyratio(startfreq); break;
+		case 'ET': result = multbyet(startfreq); break;
 		default: alert("updateResult: what kind of calculation?");
 	}
+	synths[1].sine.frequency.setValue(result);
+	result = Math.round(result*100)/100;
+	resultNote = noteNameResult(result);
+	document.getElementById('resultHz').innerHTML = result + "Hz";
+	notestr = buildNoteStr(resultNote.noteName,resultNote.octave,resultNote.accidental);
+	//alert(resultNote.octave);
+	clef = getClef(resultNote.octave);
+	//alert(clef);
+	updateStave(1,notestr,clef);
 }
 
 
@@ -118,7 +137,10 @@ function changedFreq() {
 	selectValueSet("inputNoteName",noteNames[midiNum]);
 	selectValueSet("inputAccidental",accidentals[midiNum]);
 	selectValueSet("inputOctave",octave+'');
-	updateResult();
+	updateResult();	
+	var notestr = buildNoteStr(selectValueGet("inputNoteName"), octave, selectValueGet("inputAccidental"));
+	var clef = getClef(octave);
+	updateStave(0,notestr,clef);
 }
 
 function changedNote() {
@@ -134,6 +156,37 @@ function changedNote() {
 	synths[0].sine.frequency.setValue(newFreq);
 	document.getElementById("inputFreq").value = newFreq;
 	updateResult();
+	var notestr = buildNoteStr(noteName, octave, accidental);
+	octavenum = parseFloat(octave);
+	var clef = getClef(octavenum);
+	updateStave(0,notestr,clef);
+}
+
+function buildNoteStr(noteName,octave,accidental) {
+	//alert("buildNoteStr called with "+noteName+" "+octave+" "+accidental);
+	var accidentalLetter;
+	switch(accidental) {
+		case "natural": accidentalLetter = "N"; break;
+		case 'sharp': accidentalLetter = "#"; break;
+		case 'flat': accidentalLetter = "B"; break;
+		default: alert("buildNoteStr: problem with accidental");
+	}
+	notestr = noteName+accidentalLetter+"/"+octave;
+	//alert("buildNoteStr returning with "+notestr);
+	return notestr;
+}
+
+function updateStave(canvasnum, notestr, clef) {
+	canvases[canvasnum].width = canvases[canvasnum].width;
+	var renderer = new Vex.Flow.Renderer(canvases[canvasnum], Vex.Flow.Renderer.Backends.CANVAS);
+	var ctx = renderer.getContext();
+	var stave = new Vex.Flow.Stave(0, 10, 150);
+	stave.addClef(clef).setContext(ctx).draw();
+	var note = new Vex.Flow.StaveNote({keys:[notestr],duration:"w"})
+	var voice = new Vex.Flow.Voice({num_beats:4,beat_value:4,resolution:Vex.Flow.RESOLUTION});
+	voice.addTickable(note);
+	var formatter = new Vex.Flow.Formatter().joinVoices([voice]).format([voice], 500);
+	voice.draw(ctx,stave);
 }
 
 function toggleSynth(val, n) {
