@@ -9,11 +9,15 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<meta http-equiv="Content-Style-Type" content="text/css">
 	<script type="text/javascript">
+		var pitches = new Array(2);
 		var synths = new Array(2);
 		var canvases = new Array(2);
 	</script>
 	<script src="Audiolet/src/audiolet/Audiolet.js"></script>
 	<script src="js/audiolet_app.js"></script>
+	<script src="js/interval.js"></script>
+	<script src="js/noteName.js"></script>
+	<script src="js/pitch.js"></script>
 	<script src="js/intervalcalc-util.js"></script>
 	<script src="vexflow/src/header.js"></script>
 	<script src="vexflow/src/vex.js"></script>
@@ -147,8 +151,8 @@
 			<option value="ET">ET</option>
 		</select><br />
 		<span id="transformspan">
-		Ratio: <input type="text" size="2" maxlength="4" id="numerator" value="1" onchange="updateResult()" /> / 
-		<input type="text" size="2" maxlength="4" id="denominator" value="1" onchange="updateResult()" /><br />
+		Ratio: <input type="text" size="2" maxlength="4" id="numerator" value="1" onchange="changedTransform()" /> / 
+		<input type="text" size="2" maxlength="4" id="denominator" value="1" onchange="changedTransform()" /><br />
 		</span>
 	</div>
 	<div id="right">

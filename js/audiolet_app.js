@@ -21,5 +21,6 @@ window.onload = function() {
     };
 
     this.audioletApp = new AudioletApp();
+    initPitches();
     updateResult();
 };
