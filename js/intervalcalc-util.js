@@ -183,6 +183,9 @@ function updateStave(canvasnum, notestr, clef) {
 	var stave = new Vex.Flow.Stave(0, 10, 150);
 	stave.addClef(clef).setContext(ctx).draw();
 	var note = new Vex.Flow.StaveNote({keys:[notestr],duration:"w"})
+	if ((notestr.charAt(1) != '/') && (notestr.charAt(1) != 'N')) {
+		note.addAccidental(0, new Vex.Flow.Accidental(notestr.charAt(1).toLowerCase()));
+	}
 	var voice = new Vex.Flow.Voice({num_beats:4,beat_value:4,resolution:Vex.Flow.RESOLUTION});
 	voice.addTickable(note);
 	var formatter = new Vex.Flow.Formatter().joinVoices([voice]).format([voice], 500);
