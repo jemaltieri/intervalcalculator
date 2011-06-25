@@ -68,7 +68,7 @@ function changedFreq() {
 	selectValueSet("inputNoteName",pitches[0].note.noteLetter);
 	selectValueSet("inputAccidental",pitches[0].note.noteAccidental);
 	selectValueSet("inputOctave",pitches[0].note.octave+'');
-	document.getElementById("inputCents").value = pitches[0].note.printCents(cents);	
+	document.getElementById("inputCents").value = pitches[0].note.printCents();	
 	updateStave(0,pitches[0].note);
 	updateResult();	
 }
