@@ -1,7 +1,11 @@
 intervalcalculator
 ========
 intervalcalculator is a web application designed to help musicians and music technologists with tuning math. It is by Jim Altieri.
+
+jim@tweeg.net
+
 http://tweeg.net
+
 http://twitter.com/jimaltierimusic/
 
 As of yet, it relies on two external JS libraries:
