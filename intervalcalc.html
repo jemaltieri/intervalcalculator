@@ -123,8 +123,8 @@
 			<option value="B">B</option>
 		</select>
 		<select id="inputAccidental" onchange="changedNote()">
-			<option value="natural" selected="selected">♮</option>
 			<option value="sharp">♯</option>
+			<option value="natural" selected="selected">♮</option>
 			<option value="flat">♭</option>
 		</select>
 		<select id="inputOctave" onchange="changedNote()">
@@ -149,6 +149,7 @@
 		<select id="calcType" onChange="switchTransform(this)">
 			<option value="JI" selected="selected">JI</option>
 			<option value="ET">ET</option>
+			<option value="cents">cents</option>
 		</select><br />
 		<span id="transformspan">
 		Ratio: <input type="text" size="2" maxlength="4" id="numerator" value="1" onchange="changedTransform()" /> / 
