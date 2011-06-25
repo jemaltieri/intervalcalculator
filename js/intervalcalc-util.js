@@ -79,12 +79,15 @@ function changedNote() {
 		centsStr = "0";
 	}
 	centsNum = parseFloat(centsStr);
+	//alert(centsNum);
 	octNum = parseInt(octaveStr);
 	newNote = new NoteName();
 	newNote.setNoteFromNoteName(noteNameStr,accidentalStr,octNum,centsNum);
 	pitches[0].setNote(newNote);
+	//alert("new starting pitch: "+pitches[0].getFreq());
 	synths[0].sine.frequency.setValue(pitches[0].getFreq());
 	document.getElementById("inputFreq").value = pitches[0].getFreq();
+	//alert(pitches[0].note.noteLetter);
 	updateStave(0,pitches[0].note);
 	updateResult();
 }

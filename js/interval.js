@@ -24,9 +24,10 @@ function Interval() {
 	
 	this.getMult = function() {
 		var result;
+		//alert(intervalType);
 		switch(intervalType) {
 			case "JI": result = ratio.numerator/ratio.denominator; break;
-			case "ET": result = Math.pow(2,ET.steps/ET.stepsPerOctave);
+			case "ET": result = Math.pow(2,ET.steps/ET.stepsPerOctave); break;
 			default: result = -1;
 		}
 		return result;

@@ -10,6 +10,7 @@ function NoteName() {
 	var accidentalLetterScale=["N","#","N","#","N","N","#","N","#","N","#","N"];
 	
 	this.setNoteFromFreq = function(freq) { //public
+		//alert("setNoteFromFreq called with "+freq);
 		midiNum = this.freq2midi(freq);
 		var roundedMidiNum = Math.round(midiNum);
 		this.noteCentsDeviation = Math.round(((midiNum-roundedMidiNum)*10000)/100);	
@@ -17,6 +18,7 @@ function NoteName() {
 		//since we're setting from frequency, no way to intelligently choose accidentals or note names, so by default, choose naturals/sharps
 		this.noteLetter = noteNameScale[roundedMidiNum%12];
 		this.noteAccidentalLetter = accidentalLetterScale[roundedMidiNum%12];
+		//alert("set noteAccidentalLetter to "+this.noteAccidentalLetter+" from roundedMidiNum: "+roundedMidiNum);
 		this.setFromAccidentalLetter();
 	};
 	
@@ -49,12 +51,12 @@ function NoteName() {
 	};
 
 	this.printCents = function() {
-		n = noteCentsDeviation;
+		n = this.noteCentsDeviation;
 		return (n > 0) ? "+" + n : n; 
 	};
 
 	this.humanReadable = function() {
-		return noteLetter + noteAccidentalSymbol + octave + " " + printCents() + "¢";
+		return this.noteLetter + this.noteAccidentalSymbol + this.octave + " " + this.printCents() + "¢";
 	};
 
 	this.setMidiNumFromNote = function() {
@@ -74,7 +76,7 @@ function NoteName() {
 			case 'flat': midiNum = midiNum-1; break;
 			default: alert("setMidiNumFromNoteName: problem with accidental "+this.noteAccidental);
 		}
-		midiNum = midiNum + ((parseFloat(this.octave)+1)*12);		
+		midiNum = midiNum + ((parseFloat(this.octave)+1)*12)+(this.noteCentsDeviation/100);		
 	};
 	
 	this.freq2midi = function(frequency) {
@@ -87,7 +89,7 @@ function NoteName() {
 			case 'N': this.noteAccidental = "natural"; this.noteAccidentalSymbol = "♮"; break;
 			case '#': this.noteAccidental = "sharp"; this.noteAccidentalSymbol = "♯"; break;
 			case 'B': this.noteAccidental = "flat"; this.noteAccidentalSymbol = "♭"; break;
-			default: alert("setFromAccidentalLetter: unrecognized noteAccidentalLetter");
+			default: alert("setFromAccidentalLetter: unrecognized noteAccidentalLetter: "+this.noteAccidentalLetter);
 		}
 	};
 	
@@ -96,16 +98,25 @@ function NoteName() {
 			case 'natural': this.noteAccidentalLetter = "N"; this.noteAccidentalSymbol = "♮"; break;
 			case 'sharp': this.noteAccidentalLetter = "#"; this.noteAccidentalSymbol = "♯"; break;
 			case 'flat': this.noteAccidentalLetter = "B"; this.noteAccidentalSymbol = "♭"; break;
-			default: alert("setFromAccidental: unrecognized noteAccidental");
+			default: alert("setFromAccidental: unrecognized noteAccidental: "+this.noteAccidental);
 		}
 	};
 	
 	this.getNoteStr = function() { //for interacting with vexflow
 		var notestr;
 		if (this.octave < 4) { //vexflow doesn't take bass clef into account, so hacking around here
-			tmpNote = this.clone();
-			tmpNote.setNoteFromMidiNum(tmpNote.getMidiNum()+21.); //convert between clefs
-			notestr = tmpNote.noteLetter+tmpNote.accidentalLetter+"/"+tmpNote.octave;
+			var newLetterCode = this.noteLetter.charCodeAt(0) - 2;
+			if (newLetterCode < "A".charCodeAt(0)) {
+				newLetterCode = newLetterCode + 7;
+			}
+			var newLetter = new String(String.fromCharCode(newLetterCode));
+			var octaveOffset;
+			if ((this.noteLetter == "C") || (this.noteLetter == "D")) {
+				octaveOffset = 1;
+			} else {
+				octaveOffset = 2;
+			} 
+			notestr = newLetter+this.noteAccidentalLetter+"/"+(this.octave+octaveOffset);
 		} else {
 			notestr = this.noteLetter+this.noteAccidentalLetter+"/"+this.octave;
 		}

@@ -4,7 +4,7 @@ function Pitch() {
 	
 	this.setFreq = function(freq) {
 		frequency = freq;
-		this.note.setNoteFromFreq();
+		this.note.setNoteFromFreq(freq);
 	};
 	
 	this.getFreq = function() {
@@ -12,8 +12,8 @@ function Pitch() {
 	};
 	
 	this.setNote = function(newNote) { //expecting a noteName object
-		note = newNote.clone(); //clone function in intervalcalc-util.js
-		frequency = note.getFreqFromNote();
+		this.note = newNote.clone(); //clone function in intervalcalc-util.js
+		frequency = this.note.getFreqFromNote();
 	};
 	
 	this.getNote = function() {
