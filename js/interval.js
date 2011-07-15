@@ -21,6 +21,12 @@ function Interval() {
 		ET.stepsPerOctave = peroct;
 		intervalType = "ET";
 	};
+
+	this.setCents = function(cents) {
+		ET.steps = cents;
+		ET.stepsPerOctave = 1200;
+		intervalType = "ET";
+	};	
 	
 	this.getMult = function() {
 		var result;

@@ -17,10 +17,12 @@ function initPitches() {
 
 function switchTransform(selectObj) {
 	var chosenoption=selectObj.options[selectObj.selectedIndex].value;
-	if (chosenoption == "JI") {
-		document.getElementById('transformspan').innerHTML = "Ratio: <input type=\"text\" size=\"3\" maxlength=\"3\" id=\"numerator\" value=\"1\" onchange=\"changedTransform()\"  /> / <input type=\"text\" size=\"3\" maxlength=\"3\" id=\"denominator\" value=\"1\" onchange=\"changedTransform()\"  /><br />";
-	} else if (chosenoption == "ET") {	
-		document.getElementById('transformspan').innerHTML = "<input type=\"text\" size=\"3\" maxlength=\"3\" id=\"steps\" value=\"0\" onchange=\"changedTransform()\"  /> steps out of <input type=\"text\" size=\"3\" maxlength=\"3\" id=\"stepsperoctave\" value=\"12\" onchange=\"changedTransform()\"  /> steps per octave <br />";
+	var spantochange = document.getElementById('transformspan');
+	switch(chosenoption) {
+		case "JI": spantochange.innerHTML = "Ratio: <input type=\"text\" size=\"3\" maxlength=\"3\" id=\"numerator\" value=\"1\" onchange=\"changedTransform()\"  /> / <input type=\"text\" size=\"3\" maxlength=\"3\" id=\"denominator\" value=\"1\" onchange=\"changedTransform()\"  /><br />"; break;
+	   case "ET": spantochange.innerHTML = "<input type=\"text\" size=\"3\" maxlength=\"3\" id=\"steps\" value=\"0\" onchange=\"changedTransform()\"  /> steps out of <input type=\"text\" size=\"3\" maxlength=\"3\" id=\"stepsperoctave\" value=\"12\" onchange=\"changedTransform()\"  /> steps per octave <br />"; break;
+	   case "cents": spantochange.innerHTML = "Cents: <input type=\"text\" size=\"5\" maxlength=\"5\" id=\"intervalCents\" value=\"0\" onchange=\"changedTransform()\"  /><br />"; break;
+	   default: alert("switchTransform: bad option chosen");
 	}
 	changedTransform();
 }
@@ -44,6 +46,7 @@ function changedTransform() {
 	switch (selectValueGet('calcType')) {
 		case "JI": interval.setRatio(document.getElementById("numerator").value, document.getElementById("denominator").value); break;
 		case "ET": interval.setET(document.getElementById("steps").value, document.getElementById("stepsperoctave").value); break;
+		case "cents": interval.setCents(parseFloat(document.getElementById("intervalCents").value)); break;
 		default: alert("changedTransform(): bad value for transform type");
 	}
 	updateResult();	
@@ -53,7 +56,7 @@ function updateResult() {
 	var result = pitches[0].getFreq()*interval.getMult()
 	pitches[1].setFreq(result);
 	synths[1].sine.frequency.setValue(result);
-	document.getElementById('resultHz').innerHTML = result + "Hz";
+	document.getElementById('resultHz').innerHTML = Math.round(result*100)/100 + "Hz";
 	updateStave(1,pitches[1].note); //to vexflow
 	document.getElementById("result12tet").innerHTML = pitches[1].note.humanReadable();
 }
@@ -65,7 +68,7 @@ function changedFreq() {
 	selectValueSet("inputNoteName",pitches[0].note.noteLetter);
 	selectValueSet("inputAccidental",pitches[0].note.noteAccidental);
 	selectValueSet("inputOctave",pitches[0].note.octave+'');
-	document.getElementById("inputCents").value = pitches[0].note.printCents(cents);	
+	document.getElementById("inputCents").value = pitches[0].note.printCents();	
 	updateStave(0,pitches[0].note);
 	updateResult();	
 }
@@ -86,7 +89,7 @@ function changedNote() {
 	pitches[0].setNote(newNote);
 	//alert("new starting pitch: "+pitches[0].getFreq());
 	synths[0].sine.frequency.setValue(pitches[0].getFreq());
-	document.getElementById("inputFreq").value = pitches[0].getFreq();
+	document.getElementById("inputFreq").value = Math.round(pitches[0].getFreq()*100)/100;
 	//alert(pitches[0].note.noteLetter);
 	updateStave(0,pitches[0].note);
 	updateResult();
