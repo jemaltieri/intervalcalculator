@@ -103,7 +103,7 @@ function updateStave(canvasnum, noteNameObj) {
 	var stave = new Vex.Flow.Stave(0, 10, 150);
 	stave.addClef(noteNameObj.getClef()).setContext(ctx).draw();
 	notestr = noteNameObj.getNoteStr();
-	var note = new Vex.Flow.StaveNote({keys:[notestr],duration:"w"})
+	var note = new Vex.Flow.StaveNote({clef: noteNameObj.getClef(), keys:[notestr],duration:"w"})
 	if ((notestr.charAt(1) != '/') && (notestr.charAt(1) != 'N')) {
 		note.addAccidental(0, new Vex.Flow.Accidental(notestr.charAt(1).toLowerCase()));
 	}

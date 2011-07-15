@@ -103,24 +103,7 @@ function NoteName() {
 	};
 	
 	this.getNoteStr = function() { //for interacting with vexflow
-		var notestr;
-		if (this.octave < 4) { //vexflow doesn't take bass clef into account, so hacking around here
-			var newLetterCode = this.noteLetter.charCodeAt(0) - 2;
-			if (newLetterCode < "A".charCodeAt(0)) {
-				newLetterCode = newLetterCode + 7;
-			}
-			var newLetter = new String(String.fromCharCode(newLetterCode));
-			var octaveOffset;
-			if ((this.noteLetter == "C") || (this.noteLetter == "D")) {
-				octaveOffset = 1;
-			} else {
-				octaveOffset = 2;
-			} 
-			notestr = newLetter+this.noteAccidentalLetter+"/"+(this.octave+octaveOffset);
-		} else {
-			notestr = this.noteLetter+this.noteAccidentalLetter+"/"+this.octave;
-		}
-		return notestr;
+		return this.noteLetter+this.noteAccidentalLetter+"/"+this.octave;
 	};
 	
 	this.getClef = function() {
