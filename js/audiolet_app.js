@@ -12,7 +12,7 @@ window.onload = function() {
 
     var AudioletApp = function() {
         this.audiolet = new Audiolet();
-        synths[0] = new Synth(this.audiolet, 440, 0.0, 0.0);
+        synths[0] = new Synth(this.audiolet, 440, 0.0, 0.01);
         synths[0].connect(this.audiolet.output);
         synths[0].gain.gain.setValue(0);
         synths[1] = new Synth(this.audiolet, 440, 0.0, 1.0);
